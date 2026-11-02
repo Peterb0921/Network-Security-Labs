@@ -16,7 +16,7 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 * Used **Follow -> TCP Stream** to reconstruct the entire communication stream between client and CERN web server.
 
 #### Wireshark Capture
-![Wireshark TCP stream showing plaintext HTTP traffic from CERN](./assets/wireshark%20cern%20traffic.png)
+![Wireshark TCP stream showing plaintext HTTP traffic from CERN](./wireshark%20cern%20traffic.png)
 
 #### Why It Matters
 * Demonstrates what unencrypted web traffic looks like to anyone on the same network segment running a passive packet sniffer.
@@ -41,7 +41,7 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 * Extracted active public host keys from OpenSSH and audited HTTP response headers without launching a browser.
 
 #### Scan Breakdown
-![Nmap aggressive scan showing open ports, SSH keys, and Apache version](./assets/lab02_nmap_scanme.png)
+![Nmap aggressive scan showing open ports, SSH keys, and Apache version](./nmap%20scanme.png)
 
 #### Key Findings & Defense Context
 * **Service Exposure & Version Fingerprinting:**
@@ -55,5 +55,5 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 
 #### What I Learned & The Human Element
 * **Attack Surface Minimization:** Every open port is an entry point. Enforcing strict firewall boundaries and restricting administrative access (like SSH) exclusively behind VPNs drastically reduces an organization's attack surface.
-* **Banner Suppression:** Production web servers should disable verbose headers (e.g., `ServerTokens Prod` and `ServerSignature Off` in Apache) to deny automated scanners free reconnaissance data.
+* **Banner Suppression:** Production web servers should disable verbose headers (e.g., configuring `ServerTokens Prod` and `ServerSignature Off` in Apache) to deny automated scanners free reconnaissance data.
 * **The Human Side:** Deprecated ciphers, weak keys, and verbose defaults often persist because "they work" and maintain backward compatibility. Robust security requires proactive configuration audits rather than assuming default settings are secure.
