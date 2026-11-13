@@ -68,23 +68,19 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 
 #### Steps
 
-* Provisioned a virtualized Ubuntu Linux environment and installed the Apache web server, configuring `mod_userdir` to serve content from local user directories (`public_html`).
-* Configured host-level access control using Uncomplicated Firewall (`ufw`), explicitly allowing inbound traffic solely for "Apache Full" (ports 80/443) and blocking unvetted services.
-* Deployed a MySQL database server and executed the `mysql_secure_installation` script to establish a secure baseline.
-* Hardened the database by enforcing password validation, disabling remote root logins, removing anonymous users, and dropping default testing databases.
-
-#### Firewall & MySQL Configuration
+* I configured an Ubuntu virtual machine and installed the Apache web server, setting up `mod_userdir` to serve web content directly from local user directories.
+* I applied host-level access control using Uncomplicated Firewall (UFW). I restricted inbound traffic strictly to essential web services (ports 80 and 443) and blocked all other unvetted connections.
+* After deploying a MySQL database, I ran the `mysql_secure_installation` script to establish a secure baseline. This involved enforcing password complexity, disabling remote root logins, and removing anonymous test accounts.
 
 #### Why It Matters
 
-* **Attack Surface Reduction:** Default installations of web and database servers are notoriously insecure. Hardening steps like restricting firewall ports and stripping anonymous database access are mandatory first lines of defense against automated exploitation.
-* **Service Isolation:** Running databases and web servers requires strict privilege separation so that a compromise in the web application does not automatically grant root access to the backend database.
+* **Attack Surface Reduction:** Default web and database configurations often have known vulnerabilities. Restricting firewall ports and securing database access are critical first steps in reducing a system's attack surface.
+* **Service Isolation:** Running both a database and a web server requires strict privilege separation. If the web application is compromised, the backend database must remain isolated to prevent a full system takeover.
 
 #### What I Learned & The Human Element
 
-* Using `ufw` provides a much simpler abstraction layer over `iptables`, making it easier to audit open ports and active rules (`sudo ufw status`).
-* The `mysql_secure_installation` tool highlights how many glaring vulnerabilities exist in a default SQL deployment if not actively managed.
-* **The Human Side:** Developers and system administrators often disable firewalls entirely or leave databases open to `0.0.0.0` (all IP addresses) just to "make it work" quickly during testing. This prioritization of convenience over configuration creates shadow IT and massive network vulnerabilities when those systems inevitably end up in production.
+* Using UFW provided a much more accessible way to audit active firewall rules compared to configuring raw `iptables`.
+* **The Human Side:** This lab highlighted a common behavioral issue in IT: administrators sometimes disable firewalls or leave databases open to all IP addresses (`0.0.0.0`) for the sake of convenience during testing. This prioritization of speed over security often creates shadow IT and leaves massive vulnerabilities in production environments.
 
 ---
 
@@ -96,23 +92,19 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 
 #### Steps
 
-* Downloaded and installed the Webmin repository setup script via `curl` and integrated it into the Ubuntu package manager (`apt`).
-* Updated `ufw` firewall rules to allow inbound TCP traffic on port 10000 to expose the Webmin administrative GUI.
-* Created dedicated Webmin user groups and assigned specific module permissions to enforce role-based access control (RBAC) for new administrative users.
-* Leveraged the Webmin GUI to architect a new MySQL database (`CIS2229`) and structured relational tables with defined primary keys and auto-increment schemas.
-
-#### Webmin Database Management
+* I installed the Webmin administrative panel via the command line and updated my UFW firewall rules to allow inbound TCP traffic on port 10000.
+* To enforce role-based access control (RBAC), I created dedicated user groups within Webmin and assigned them specific module permissions based on the principle of least privilege.
+* I used Webmin's graphical interface to build a new MySQL database (`CIS2229`), structuring relational tables with defined primary keys and auto-incrementing values.
 
 #### Why It Matters
 
-* **Centralized Management Risks:** Web-based control panels like Webmin are incredibly powerful but represent high-value targets for threat actors. If compromised, the attacker gains full root-level control over the server infrastructure through a browser.
-* **Access Control:** Implementing strict user groups ensures that junior administrators only have access to the modules they need, adhering to the principle of least privilege.
+* **Centralized Management Risks:** Web-based control panels streamline server management, but they represent high-value targets. If the panel is compromised, an attacker gains root-level access to the server directly from their browser.
+* **Access Control:** Implementing strict user groups ensures that junior administrators only have access to the specific modules they need to do their jobs.
 
 #### What I Learned & The Human Element
 
-* Webmin abstracts complex CLI configurations into a graphical interface, making database management, user creation, and service restarting significantly faster.
-* Running commands with static outputs (like `ping -c 10 www.yahoo.com`) via a web-based command shell demonstrates how web panels execute backend system commands.
-* **The Human Side:** IT professionals love administrative panels because they reduce friction and cognitive load. However, exposing administrative interfaces on open ports (like 10000) without VPN restrictions or Multi-Factor Authentication relies on the dangerous assumption that the login page won't be brute-forced or exploited by a zero-day vulnerability.
+* Webmin significantly speeds up database management and service configurations by abstracting complex command-line tasks into a visual interface.
+* **The Human Side:** Exposing administrative interfaces to the open web without additional protections like a VPN or Multi-Factor Authentication assumes the login page won't be targeted. It's a clear example of how seeking operational efficiency can inadvertently expand the attack surface if human convenience overrides secure architecture.
 
 ---
 
@@ -124,20 +116,17 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 
 #### Steps
 
-* Loaded raw `.pcap` files into Wireshark to analyze diverse network traffic, including HTTP, Telnet, SMTP, DNS, and DHCP.
-* Filtered HTTP traffic to dissect client requests, identify requested endpoints, review server status codes, and extract user-agent metadata (browser and OS footprints).
-* Utilized the "Follow TCP Stream" feature on a Telnet packet capture to fully reconstruct the communication between client and server.
-* Dissected SMTP email traffic streams to identify the hostname of the mail server, the sender/receiver email addresses, and the names of attached files.
+* I analyzed several raw network packet captures (`.pcap`) in Wireshark to inspect HTTP, Telnet, SMTP, DNS, and DHCP traffic.
+* By filtering the HTTP traffic, I reviewed client requests, server status codes, and browser metadata (user-agents).
+* I utilized the "Follow TCP Stream" feature to reconstruct the full communication between a client and a Telnet server.
+* I dissected SMTP email traffic to identify mail server hostnames, sender and receiver addresses, and email attachments.
 
-#### Wireshark Protocol Dissection
+#### Why It Matters
 
-#### Key Findings & Defense Context
-
-* **Protocol Dissection:** Understanding encapsulation—how a TCP segment sits inside an IP packet, which sits inside an Ethernet frame—is essential for isolating where a network anomaly is occurring.
-* **Incident Response:** Packet captures are the ground truth in cybersecurity. If a system is compromised, analyzing the `.pcap` allows a security analyst to see exactly what data was exfiltrated and what commands were executed.
+* **Protocol Dissection:** Understanding how data is encapsulated across different network layers is essential for isolating anomalies and understanding network architecture.
+* **Incident Response:** Packet captures serve as the ground truth for network activity. If a breach occurs, analyzing the `.pcap` files allows security analysts to see exactly what data was exfiltrated.
 
 #### What I Learned & The Human Element
 
-* Legacy protocols like Telnet and basic SMTP offer absolutely no encryption. Using the "Follow TCP Stream" feature instantly exposes the user's username and password in perfect cleartext.
-* Wireshark acts as an X-ray for network traffic, stripping away protocol overhead to reveal the exact application payload being transmitted over the wire.
-* **The Human Side:** People are habitual and frequently reuse passwords across multiple services. If a user logs into a legacy Telnet server or an unencrypted SMTP relay, a passive network sniffer immediately captures those credentials. The human tendency toward password reuse means that one exposed plaintext login can compromise their entire digital identity across highly secure platforms as well.
+* Inspecting legacy protocols like Telnet and basic SMTP revealed how dangerous unencrypted communication can be. Using the TCP Stream feature exposed usernames and passwords in cleartext immediately.
+* **The Human Side:** Because people frequently reuse passwords across platforms, one intercepted plaintext login on an old, unencrypted system can easily lead to compromised accounts on highly secure platforms. Human memory limitations drive password reuse, making legacy protocols a massive security risk.
