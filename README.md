@@ -130,3 +130,28 @@ Hands-on technical labs documenting network traffic inspection, attack surface r
 
 * Inspecting legacy protocols like Telnet and basic SMTP revealed how dangerous unencrypted communication can be. Using the TCP Stream feature exposed usernames and passwords in cleartext immediately.
 * **The Human Side:** Because people frequently reuse passwords across platforms, one intercepted plaintext login on an old, unencrypted system can easily lead to compromised accounts on highly secure platforms. Human memory limitations drive password reuse, making legacy protocols a massive security risk.
+
+---
+
+### 🔹 Lab 06: Self-Hosted Home Server & Secure Remote Access (ZimaOS, Docker & Tailscale)
+
+- **Date:** November 19, 2026
+- **Target:** `Localhost` (Dedicated Home Server / ZimaOS)
+- **Tools Used:** ZimaOS, BalenaEtcher, Docker, Portainer, Immich, Jellyfin, Tailscale, Cloudflare
+
+#### Steps
+
+- I flashed ZimaOS onto a bootable USB drive using BalenaEtcher and installed it on a dedicated machine to build a lightweight, Linux-based home server.
+- I configured local storage and network file sharing so the server operates as a private cloud drive accessible across devices on my local network.
+- I deployed Portainer to manage Docker containers and spun up self-hosted services—including Immich for local photo backups and Jellyfin for media streaming—keeping each application isolated from the host OS.
+- I set up Tailscale to create a private mesh network for secure remote access, and configured a Cloudflare reverse proxy with a custom domain to route external traffic without opening raw ports on my router.
+
+#### Why It Matters
+
+- **Data Ownership & Container Isolation:** Hosting personal files locally keeps sensitive data off third-party servers. Running each service inside a Docker container ensures that if one application breaks or is compromised, the issue stays isolated instead of affecting the entire server.
+- **Zero-Exposure Remote Access:** Traditional port forwarding exposes a home network's IP address and internal ports to automated scanners on the public internet. Using a mesh VPN (Tailscale) or a reverse proxy allows remote access while keeping the underlying network hidden.
+
+#### What I Learned & The Human Element
+
+- Managing applications through Docker and Portainer is much cleaner and easier to maintain than installing services directly onto a host operating system, and Tailscale removes a lot of the friction involved in setting up secure remote networking.
+- **The Human Side:** Most people stay locked into third-party cloud subscriptions because convenience almost always wins out over privacy. Companies design their platforms to be effortless to use, which creates long-term dependence on external servers. Setting up a home server takes more effort upfront, but it shows that users don't have to give up control of their personal data just to have an accessible, modern experience.
